@@ -1,6 +1,5 @@
 log_level: "local"
-log_file: "calendar.log"
-storage_path: "./storage/storage.db"
+storage_path: "postgres://postgres:1213@localhost:5432/calendar?sslmode=disable"
 http_server:
   address: "localhost:8080"
   timeout: 4s

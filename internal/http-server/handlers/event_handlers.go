@@ -2,23 +2,24 @@ package handlers
 
 import (
 	"encoding/json"
-	"github.com/NikKazzzzzz/Calendar-main/internal/models"
 	"log/slog"
 	"net/http"
 	"strconv"
 	"time"
 
+	"github.com/NikKazzzzzz/Calendar-main/internal/models"
+
 	"github.com/NikKazzzzzz/Calendar-main/internal/lib/logger/sl"
-	"github.com/NikKazzzzzz/Calendar-main/internal/storage/sqlite"
+	"github.com/NikKazzzzzz/Calendar-main/internal/storage/postgres"
 	"github.com/go-chi/chi/v5"
 )
 
 type EventHandler struct {
-	storage *sqlite.Storage
+	storage *postgres.Storage
 	Logger  *slog.Logger
 }
 
-func NewEventHandler(storage *sqlite.Storage, logger *slog.Logger) *EventHandler {
+func NewEventHandler(storage *postgres.Storage, logger *slog.Logger) *EventHandler {
 	return &EventHandler{storage: storage, Logger: logger}
 }
 
