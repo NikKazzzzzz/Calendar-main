@@ -56,6 +56,7 @@ func main() {
 	router.Put("/events/{id}", eventHandler.UpdateEvent)
 	router.Delete("/events/{id}", eventHandler.DeleteEvent)
 	router.Get("/events/{id}", eventHandler.GetEventByID)
+	router.Get("/events", eventHandler.GetAllEvents)
 
 	log.Info("starting server", slog.String("address", cfg.Address))
 

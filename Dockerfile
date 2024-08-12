@@ -1,25 +1,29 @@
-# Dockerfile for Calendar service
+# Этап 1: Сборка бинарного файла
+FROM golang:1.22-alpine AS builder
 
-# Use a Golang base image
-FROM golang:1.20-alpine
-
-# Set the working directory
 WORKDIR /app
 
-# Copy the go.mod and go.sum files
+# Копируем зависимости Go
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy the source code
+# Копируем исходный код приложения
 COPY . .
 
-# Build the application
-RUN go build -o calendar cmd/calendar/main.go
+# Сборка приложения
+RUN go build -o Calendar_main ./cmd/calendar/main.go
 
-# Expose the port the service runs on
-EXPOSE 8080
+# Сборка мигратора
+RUN go build -o Migrator ./cmd/migrator/main.go
 
-# Command to run the application
-CMD ["./calendar"]
+# Этап 2: Создание минимального образа
+FROM alpine:3.18
+
+WORKDIR /app
+
+# Копируем скомпилированный бинарник из предыдущего этапа
+COPY --from=builder /app/Calendar_main .
+COPY --from=builder /app/Migrator .
+
+# Указываем команду для запуска сервиса
+CMD ["./Calendar_main"]

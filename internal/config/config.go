@@ -9,7 +9,7 @@ import (
 )
 
 type Config struct {
-	Env        string `yaml:"env" env-default:"local"`
+	Env        string `yaml:"log_level" env-default:"local"`
 	StorageDSN string `yaml:"storage_path" env-required:"true"`
 	HTTPServer `yaml:"http_server"`
 }

@@ -59,8 +59,7 @@ func (s *Storage) GetEventByID(id int) (*models.Event, error) {
 	event := &models.Event{}
 	query := `SELECT id, title, description, start_time, end_time FROM events WHERE id = $1`
 	row := s.db.QueryRow(query, id)
-	var startTimeStr, endTimeStr string
-	err := row.Scan(&event.ID, &event.Title, &event.Description, &startTimeStr, &endTimeStr)
+	err := row.Scan(&event.ID, &event.Title, &event.Description, &event.StartTime, &event.EndTime)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -69,6 +68,37 @@ func (s *Storage) GetEventByID(id int) (*models.Event, error) {
 	}
 
 	return event, nil
+}
+
+func (s *Storage) GetAllEvent() ([]*models.Event, error) {
+	query := `SELECT id, title, description, start_time, end_time FROM events`
+	rows, err := s.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var events []*models.Event
+	for rows.Next() {
+		event := &models.Event{}
+		var startTimeStr, endTimeStr string
+		if err := rows.Scan(&event.ID, &event.Title, &event.Description, &startTimeStr, &endTimeStr); err != nil {
+			return nil, err
+		}
+
+		event.StartTime, err = time.Parse(time.RFC3339, endTimeStr)
+		if err != nil {
+			return nil, err
+		}
+		event.EndTime, err = time.Parse(time.RFC3339, startTimeStr)
+		if err != nil {
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	return events, nil
 }
 
 func (s *Storage) IsTimeSlotTaken(startTime time.Time, endTime time.Time) (bool, error) {

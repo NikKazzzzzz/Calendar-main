@@ -134,3 +134,19 @@ func (h *EventHandler) GetEventByID(w http.ResponseWriter, r *http.Request) {
 	h.Logger.Info("event retrieved successfully", slog.Int("id", id))
 	json.NewEncoder(w).Encode(event)
 }
+
+func (h *EventHandler) GetAllEvents(w http.ResponseWriter, r *http.Request) {
+	events, err := h.storage.GetAllEvent()
+	if err != nil {
+		h.Logger.Error("failed to get all events", sl.Err(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	h.Logger.Info("all events retrieved successfully")
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(events); err != nil {
+		h.Logger.Error("failed to encode events", sl.Err(err))
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
