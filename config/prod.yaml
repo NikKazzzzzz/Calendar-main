@@ -1,0 +1,6 @@
+log_level: "prod"
+storage_path: "postgres://postgres:1213@localhost:5432/calendar?sslmode=disable"
+http_server:
+  address: "localhost:8080"
+  timeout: 10s
+  idle_timeout: 180s
