@@ -1,3 +1,2 @@
-config/local.yaml
-config/prod.yaml
+/config/
 .idea/

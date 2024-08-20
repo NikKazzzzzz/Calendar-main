@@ -13,8 +13,6 @@ COPY . .
 # Сборка приложения
 RUN go build -o Calendar_main ./cmd/calendar/main.go
 
-# Сборка мигратора
-RUN go build -o Migrator ./cmd/migrator/main.go
 
 # Этап 2: Создание минимального образа
 FROM alpine:3.18
@@ -23,7 +21,6 @@ WORKDIR /app
 
 # Копируем скомпилированный бинарник из предыдущего этапа
 COPY --from=builder /app/Calendar_main .
-COPY --from=builder /app/Migrator .
 
 # Указываем команду для запуска сервиса
-CMD ["./Calendar_main"]
+CMD ["sh", "-c", "sleep 15 && ./Calendar_main"]

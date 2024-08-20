@@ -9,9 +9,12 @@ import (
 )
 
 type Config struct {
-	Env        string `yaml:"log_level" env-default:"local"`
-	StorageDSN string `yaml:"storage_path" env-required:"true"`
-	HTTPServer `yaml:"http_server"`
+	Env          string `yaml:"log_level" env-default:"local"`
+	MongoDSN     string `yaml:"mongo_dsn"`
+	DatabaseName string `yaml:"databaseName"`
+	Username     string `yaml:"username" env:"MONGO_USERNAME"`
+	Password     string `yaml:"password" env:"MONGO_PASSWORD"`
+	HTTPServer   `yaml:"http_server"`
 }
 
 type HTTPServer struct {
@@ -35,6 +38,8 @@ func MustLoad() *Config {
 	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
 		log.Fatalf("failed to read config: %s", err)
 	}
+
+	log.Printf("loaded config: %+v", cfg)
 
 	return &cfg
 }
